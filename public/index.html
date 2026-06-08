@@ -325,6 +325,11 @@ const GRADE_ORDER=['OO','O','△','X','XX'];
 const GRADE_LABEL={ko:{'OO':'매우 이로움','O':'이로움','△':'주의','X':'해로움','XX':'절대 금기'},
                    en:{'OO':'Very Good','O':'Good','△':'Caution','X':'Avoid','XX':'Strictly Avoid'}};
 const GRADE_CLASS={'OO':'OO','O':'O','△':'mid','X':'X','XX':'XX'};
+// 순위 표시용 한자 매핑 (천간·지지·위치라벨)
+const STEM_HAN={'갑':'甲','을':'乙','병':'丙','정':'丁','무':'戊','기':'己','경':'庚','신':'辛','임':'壬','계':'癸'};
+const BRANCH_HAN={'자':'子','축':'丑','인':'寅','묘':'卯','진':'辰','사':'巳','오':'午','미':'未','신':'申','유':'酉','술':'戌','해':'亥'};
+const CHAR_HAN=Object.assign({},STEM_HAN,BRANCH_HAN);
+const POS_HAN={'일지':'日支','월지':'月支','년지':'年支','연지':'年支','일간':'日干','월간':'月干','년간':'年干','연간':'年干'};
 
 // ── 셀렉트 채우기 ──
 (function fillSelects(){
@@ -426,6 +431,18 @@ function renderResult(data){
     }
   }
 
+  // 간지표 (체질명 바로 아래 — 항상 표시)
+  const g=p.ganji;
+  html+=`<div class="ganji-row">
+    ${gjCell('년주',g.year)}${gjCell('월주',g.month)}${gjCell('일주',g.day)}
+  </div>`;
+  // 절기
+  if(data.jieqi){
+    const dt=data.jieqi.date;
+    const dstr=Array.isArray(dt)?`${dt[0]}년 ${dt[1]}월 ${dt[2]}일`:`${dt.year}년 ${dt.month}월 ${dt.day}일`;
+    html+=`<div class="meta-line">절기: <b>${data.jieqi.name}</b> (${dstr}) ~ ${data.jieqi.next} 전</div>`;
+  }
+
   // 탭
   html+=`<div class="tabs">
     <button class="${activeTab==='health'?'on':''}" onclick="switchTab('health')">${t.tabHealth}</button>
@@ -500,10 +517,12 @@ function renderBasis(data){
     <div class="rank-flow">`;
   p.ranked.forEach((r,i)=>{
     if(i>0)html+=`<div class="rank-arrow">›</div>`;
+    const ch=CHAR_HAN[r.value]||r.value;
+    const pos=POS_HAN[r.label]||r.label;
     html+=`<div class="rank-cell ${i===0?'top':''}">
       <div class="rank-no">${i+1}</div>
-      <div class="rank-char el-${r.element}">${r.value}</div>
-      <div class="rank-pos">${r.label}</div>
+      <div class="rank-char el-${r.element}">${ch}</div>
+      <div class="rank-pos">${pos}</div>
       <div class="rank-str">${r.strength}</div>
     </div>`;
   });
@@ -511,23 +530,12 @@ function renderBasis(data){
 
   // 핵심판정 (사람 말로 — Q코드 제거)
   const top=p.ranked[0];
+  const topCh=CHAR_HAN[top.value]||top.value;
+  const topPos=POS_HAN[top.label]||top.label;
   html+=`<div class="key-judge">
-    가장 강한 기운은 <b>${top.label} '${top.value}'</b> (강도 ${top.strength}) 이며,
+    가장 강한 기운은 <b>${topPos} '${topCh}'</b> (강도 ${top.strength}) 이며,
     이를 중심으로 <b>${data.primary.constitution}</b> 으로 판별됩니다.
   </div>`;
-
-  // 간지표
-  const g=p.ganji;
-  html+=`<div class="ganji-row">
-    ${gjCell('년주',g.year)}${gjCell('월주',g.month)}${gjCell('일주',g.day)}
-  </div>`;
-
-  // 절기
-  if(data.jieqi){
-    const dt=data.jieqi.date;
-    const dstr = Array.isArray(dt) ? `${dt[0]}년 ${dt[1]}월 ${dt[2]}일` : `${dt.year}년 ${dt.month}월 ${dt.day}일`;
-    html+=`<div class="meta-line">절기: <b>${data.jieqi.name}</b> (${dstr}) ~ ${data.jieqi.next} 전</div>`;
-  }
 
   // 干支體質論 이론적 배경 (계보 + 미·술=화 차별점) · 연구·검증 중 · 접힘
   html+=`<div class="theory-box">
