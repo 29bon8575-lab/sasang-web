@@ -151,7 +151,10 @@ header{text-align:center;padding:26px 0 22px;}
     --g-oo:#0a7d4a!important; --g-o:#2e7d32!important; --g-mid:#8a6d00!important; --g-x:#b03a2e!important; --g-xx:#a01810!important;
   }
   body{background:#fff!important;color:#111!important;}
-  .topbar,header,.card,.tabs,.loading,.no-print,.boundary-note .bn-head,.theory-box{display:none!important;}
+  .topbar,header,.tabs,.loading,.no-print,.boundary-note .bn-head,.theory-box{display:none!important;}
+  /* 입력/안내 카드만 숨김, 결과카드(t-…)는 살림 */
+  .card:not([class*="t-"]){display:none!important;}
+  .card[class*="t-"]{display:block!important;background:#fff!important;border:none!important;box-shadow:none!important;padding:0!important;}
   .tab-pane{display:block!important;animation:none!important;page-break-inside:avoid;margin-top:18px;}
   .wrap{max-width:100%!important;padding:0!important;}
   *{box-shadow:none!important;text-shadow:none!important;}
