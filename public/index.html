@@ -378,10 +378,11 @@ const POS_HAN={'일지':'日支','월지':'月支','년지':'年支','연지':'�
 (function fillSelects(){
   const y=document.getElementById('selYear'), m=document.getElementById('selMonth'), d=document.getElementById('selDay');
   const now=new Date().getFullYear();
-  for(let i=now;i>=1900;i--){const o=document.createElement('option');o.value=i;o.textContent=i;y.appendChild(o);}
-  for(let i=1;i<=12;i++){const o=document.createElement('option');o.value=i;o.textContent=i;m.appendChild(o);}
-  for(let i=1;i<=31;i++){const o=document.createElement('option');o.value=i;o.textContent=i;d.appendChild(o);}
-  y.value=1976;m.value=6;d.value=24;
+  const ph=(sel,txt)=>{const o=document.createElement('option');o.value='';o.textContent=txt;o.disabled=true;o.selected=true;sel.appendChild(o);};
+  ph(y,'년'); for(let i=now;i>=1900;i--){const o=document.createElement('option');o.value=i;o.textContent=i;y.appendChild(o);}
+  ph(m,'월'); for(let i=1;i<=12;i++){const o=document.createElement('option');o.value=i;o.textContent=i;m.appendChild(o);}
+  ph(d,'일'); for(let i=1;i<=31;i++){const o=document.createElement('option');o.value=i;o.textContent=i;d.appendChild(o);}
+  // 기본값 빈칸 (사용자가 직접 선택)
 })();
 
 let calType='solar';
@@ -412,8 +413,13 @@ function setLang(l){
 // ───────────────────────────────────────────
 let lastResult=null;
 async function analyze(){
-  const p={calType, year:+selYear.value, month:+selMonth.value, day:+selDay.value, isLeap:chkLeap.checked};
   const L=document.getElementById('loading'), R=document.getElementById('result');
+  if(!selYear.value || !selMonth.value || !selDay.value){
+    R.style.display='block';
+    R.innerHTML='<div class="card" style="text-align:center;color:var(--ink-soft)">생년월일(년·월·일)을 모두 선택해주세요.</div>';
+    return;
+  }
+  const p={calType, year:+selYear.value, month:+selMonth.value, day:+selDay.value, isLeap:chkLeap.checked};
   L.style.display='block'; R.style.display='none';
   try{
     const resp=await fetch('/api/analyze',{
