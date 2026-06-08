@@ -1,0 +1,10 @@
+{
+  "name": "sasang-web",
+  "version": "1.0.0",
+  "private": true,
+  "description": "干支體質論 사상체질 진단 — 신라한의원",
+  "type": "module",
+  "engines": {
+    "node": ">=18"
+  }
+}

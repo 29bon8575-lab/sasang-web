@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>사상체질 진단 · 신라한의원</title>
+<meta name="description" content="干支體質論 기반 사상체질 감별 — 생년월일만으로 태양·소양·태음·소음인을 판별합니다." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Noto+Serif+KR:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #2b2620;
+    --ink-soft: #5c5448;
+    --paper: #f7f3ea;
+    --paper-2: #fffdf8;
+    --line: #ddd2bd;
+    --hwangto: #8a5a2b;
+    --hwangto-soft: #b5895a;
+    --jade: #3f6b54;
+    --dancheong-red: #9c3b34;
+    --dancheong-blue: #2f5a7a;
+    --shadow: 0 6px 24px rgba(70,55,30,0.10);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Noto Serif KR', serif;
+    background:
+      radial-gradient(1200px 600px at 80% -10%, #efe7d4 0%, transparent 60%),
+      var(--paper);
+    color: var(--ink);
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+    padding: 0 0 80px;
+  }
+  .wrap { max-width: 760px; margin: 0 auto; padding: 0 18px; }
+
+  /* ── 헤더 ── */
+  header {
+    text-align: center;
+    padding: 52px 18px 36px;
+  }
+  .seal {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 62px; height: 62px; margin-bottom: 18px;
+    border: 2px solid var(--dancheong-red);
+    border-radius: 10px;
+    color: var(--dancheong-red);
+    font-family: 'Gowun Batang', serif; font-weight: 700; font-size: 30px;
+    background: var(--paper-2);
+    box-shadow: var(--shadow);
+  }
+  h1 {
+    font-family: 'Gowun Batang', serif;
+    font-size: clamp(26px, 5vw, 34px);
+    font-weight: 700; letter-spacing: -0.5px;
+    color: var(--ink);
+  }
+  h1 .han { color: var(--hwangto); font-size: 0.7em; }
+  .subtitle {
+    margin-top: 10px; color: var(--ink-soft); font-size: 15px;
+  }
+  .clinic {
+    margin-top: 4px; color: var(--hwangto); font-size: 13px; letter-spacing: 1px;
+  }
+
+  /* ── 카드 ── */
+  .card {
+    background: var(--paper-2);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    box-shadow: var(--shadow);
+    padding: 26px 24px;
+    margin-bottom: 22px;
+  }
+  .card-title {
+    font-family: 'Gowun Batang', serif; font-weight: 700;
+    font-size: 17px; color: var(--hwangto);
+    margin-bottom: 18px; padding-bottom: 10px;
+    border-bottom: 1px dashed var(--line);
+    display: flex; align-items: center; gap: 8px;
+  }
+
+  /* ── 달력 토글 ── */
+  .toggle {
+    display: flex; gap: 8px; margin-bottom: 20px;
+  }
+  .toggle button {
+    flex: 1; padding: 11px; border: 1px solid var(--line);
+    background: var(--paper); color: var(--ink-soft);
+    border-radius: 10px; cursor: pointer; font-family: inherit;
+    font-size: 15px; font-weight: 500; transition: all .15s;
+  }
+  .toggle button.active {
+    background: var(--hwangto); color: #fff; border-color: var(--hwangto);
+    box-shadow: 0 3px 10px rgba(138,90,43,0.3);
+  }
+
+  /* ── 입력 ── */
+  .field-row { display: flex; gap: 10px; align-items: flex-end; flex-wrap: wrap; }
+  .field { flex: 1; min-width: 90px; }
+  .field label {
+    display: block; font-size: 13px; color: var(--ink-soft); margin-bottom: 6px;
+  }
+  select {
+    width: 100%; padding: 11px 10px; border: 1px solid var(--line);
+    border-radius: 10px; background: var(--paper-2); color: var(--ink);
+    font-family: inherit; font-size: 15px; cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%238a5a2b' d='M6 8L0 0h12z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 12px center;
+  }
+  .leap-row {
+    margin-top: 14px; display: flex; align-items: center; gap: 8px;
+    font-size: 14px; color: var(--ink-soft);
+  }
+  .leap-row input { width: 17px; height: 17px; accent-color: var(--hwangto); }
+
+  .btn-main {
+    width: 100%; margin-top: 22px; padding: 15px;
+    background: linear-gradient(135deg, var(--hwangto), #6f4621);
+    color: #fff; border: none; border-radius: 12px;
+    font-family: 'Gowun Batang', serif; font-weight: 700; font-size: 17px;
+    cursor: pointer; letter-spacing: 1px;
+    box-shadow: 0 4px 14px rgba(138,90,43,0.35); transition: transform .1s, box-shadow .15s;
+  }
+  .btn-main:hover { transform: translateY(-1px); box-shadow: 0 6px 18px rgba(138,90,43,0.45); }
+  .btn-main:active { transform: translateY(0); }
+  .btn-main:disabled { opacity: .55; cursor: wait; }
+
+  .error {
+    margin-top: 14px; padding: 12px 14px; border-radius: 10px;
+    background: #fbeae8; border: 1px solid #e8c5c0; color: var(--dancheong-red);
+    font-size: 14px;
+  }
+
+  /* ── 결과 ── */
+  .result-hero {
+    text-align: center; padding: 30px 18px;
+    background: linear-gradient(160deg, #fffdf8, #f3ecdc);
+    border: 1px solid var(--line); border-radius: 16px;
+    box-shadow: var(--shadow); margin-bottom: 22px;
+  }
+  .result-label { font-size: 14px; color: var(--ink-soft); letter-spacing: 2px; }
+  .result-type {
+    font-family: 'Gowun Batang', serif; font-weight: 700;
+    font-size: clamp(40px, 9vw, 58px); color: var(--hwangto);
+    margin: 6px 0; letter-spacing: 2px;
+  }
+  .result-note { font-size: 14px; color: var(--ink-soft); }
+  .conv-note {
+    margin-top: 12px; font-size: 13px; color: var(--jade);
+    background: #eef3ee; display: inline-block; padding: 5px 12px; border-radius: 20px;
+  }
+
+  /* ── 간지표 ── */
+  .ganji-grid {
+    display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; margin-bottom: 16px;
+  }
+  .ganji-cell {
+    text-align: center; padding: 16px 8px;
+    background: var(--paper); border: 1px solid var(--line); border-radius: 12px;
+  }
+  .ganji-cell .gj-label { font-size: 12px; color: var(--ink-soft); margin-bottom: 6px; }
+  .ganji-cell .gj-han {
+    font-family: 'Gowun Batang', serif; font-size: 30px; font-weight: 700;
+    color: var(--ink); line-height: 1.1;
+  }
+  .ganji-cell .gj-kr { font-size: 13px; color: var(--hwangto); margin-top: 3px; }
+
+  .trace {
+    font-size: 13px; color: var(--ink-soft); padding: 12px 14px;
+    background: var(--paper); border-radius: 10px; border: 1px solid var(--line);
+  }
+  .trace b { color: var(--ink); }
+
+  /* ── 경계 사례 ── */
+  .boundary {
+    border: 1px solid var(--dancheong-blue); background: #eef3f7;
+  }
+  .boundary .card-title { color: var(--dancheong-blue); border-color: #c5d5e0; }
+  .bd-bars { margin: 8px 0 4px; }
+  .bd-bar-label { display: flex; justify-content: space-between; font-size: 14px; margin-bottom: 5px; }
+  .bd-track { height: 12px; background: #e3e9ee; border-radius: 6px; overflow: hidden; margin-bottom: 14px; }
+  .bd-fill { height: 100%; border-radius: 6px; }
+  .bd-fill.ip { background: var(--hwangto); }
+  .bd-fill.sol { background: var(--dancheong-blue); }
+  .bd-explain { font-size: 13px; color: var(--ink-soft); line-height: 1.7; }
+
+  /* ── 섭생법 ── */
+  .acc-btn {
+    width: 100%; padding: 15px 18px; margin-top: 8px;
+    background: var(--jade); color: #fff; border: none; border-radius: 12px;
+    font-family: 'Gowun Batang', serif; font-weight: 700; font-size: 16px;
+    cursor: pointer; text-align: left; display: flex; justify-content: space-between;
+    box-shadow: 0 3px 12px rgba(63,107,84,0.3);
+  }
+  .cat {
+    border: 1px solid var(--line); border-radius: 10px; margin-bottom: 8px; overflow: hidden;
+  }
+  .cat-head {
+    width: 100%; padding: 12px 16px; background: var(--paper);
+    border: none; cursor: pointer; font-family: inherit; font-size: 15px;
+    font-weight: 600; color: var(--ink); text-align: left;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .cat-body { padding: 6px 14px 14px; }
+  .food-row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 8px 4px; border-bottom: 1px dashed var(--line); font-size: 14px;
+  }
+  .food-row:last-child { border-bottom: none; }
+  .food-name { color: var(--ink); }
+  .chips { display: flex; gap: 5px; }
+  .chip {
+    min-width: 30px; text-align: center; padding: 3px 7px; border-radius: 6px;
+    font-size: 12px; font-weight: 700;
+  }
+  .source-note {
+    margin-top: 14px; font-size: 12px; color: var(--ink-soft);
+    padding-top: 12px; border-top: 1px dashed var(--line); line-height: 1.6;
+  }
+
+  .disclaimer {
+    text-align: center; font-size: 12px; color: var(--ink-soft);
+    margin-top: 30px; line-height: 1.7;
+  }
+  .hidden { display: none; }
+  .spin {
+    display: inline-block; width: 15px; height: 15px; border: 2px solid rgba(255,255,255,.4);
+    border-top-color: #fff; border-radius: 50%; animation: sp .7s linear infinite; vertical-align: -2px;
+  }
+  @keyframes sp { to { transform: rotate(360deg); } }
+</style>
+</head>
+<body>
+  <header>
+    <div class="seal">辰</div>
+    <h1>사상체질 진단 <span class="han">四象體質</span></h1>
+    <p class="subtitle">干支體質論 — 생년월일만으로 체질을 판별합니다</p>
+    <p class="clinic">신라한의원</p>
+  </header>
+
+  <div class="wrap">
+    <!-- 입력 카드 -->
+    <div class="card">
+      <div class="card-title">📅 생년월일 입력</div>
+      <div class="toggle">
+        <button id="btnSolar" class="active" onclick="setCalType('solar')">양력</button>
+        <button id="btnLunar" onclick="setCalType('lunar')">음력</button>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label>년</label>
+          <select id="selYear"></select>
+        </div>
+        <div class="field">
+          <label>월</label>
+          <select id="selMonth"></select>
+        </div>
+        <div class="field">
+          <label>일</label>
+          <select id="selDay"></select>
+        </div>
+      </div>
+      <div id="leapRow" class="leap-row hidden">
+        <input type="checkbox" id="chkLeap" />
+        <label for="chkLeap">윤달입니다</label>
+      </div>
+      <button id="btnAnalyze" class="btn-main" onclick="analyze()">체질 감별하기</button>
+      <div id="errBox" class="error hidden"></div>
+    </div>
+
+    <!-- 결과 영역 -->
+    <div id="resultArea"></div>
+  </div>
+
+<script src="/guidance-data.js"></script>
+<script>
+  // ════════════════════════════════════════════════════════
+  //  브라우저 코드 — 계산식 없음. 입력 수집 + 서버 호출 + 표시.
+  //  체질감별 알고리즘은 서버(/api/analyze)에만 존재합니다.
+  // ════════════════════════════════════════════════════════
+  let calType = 'solar';
+
+  // 셀렉트 채우기
+  (function initSelects() {
+    const y = document.getElementById('selYear');
+    const m = document.getElementById('selMonth');
+    const d = document.getElementById('selDay');
+    for (let i = 1900; i <= 2049; i++) y.add(new Option(i + '년', i));
+    for (let i = 1; i <= 12; i++) m.add(new Option(i + '월', i));
+    for (let i = 1; i <= 31; i++) d.add(new Option(i + '일', i));
+    y.value = 1976; m.value = 6; d.value = 24; // 기본 회귀 케이스
+  })();
+
+  function setCalType(t) {
+    calType = t;
+    document.getElementById('btnSolar').classList.toggle('active', t === 'solar');
+    document.getElementById('btnLunar').classList.toggle('active', t === 'lunar');
+    document.getElementById('leapRow').classList.toggle('hidden', t !== 'lunar');
+  }
+
+  function showError(msg) {
+    const e = document.getElementById('errBox');
+    e.textContent = msg; e.classList.remove('hidden');
+  }
+  function clearError() { document.getElementById('errBox').classList.add('hidden'); }
+
+  async function analyze() {
+    clearError();
+    const btn = document.getElementById('btnAnalyze');
+    const payload = {
+      calType,
+      year:  document.getElementById('selYear').value,
+      month: document.getElementById('selMonth').value,
+      day:   document.getElementById('selDay').value,
+      isLeap: document.getElementById('chkLeap').checked,
+    };
+
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spin"></span> 감별 중...';
+
+    try {
+      const res = await fetch('/api/analyze', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      const data = await res.json();
+      if (!data.ok) { showError(data.error || '오류가 발생했습니다.'); return; }
+      renderResult(data);
+    } catch (e) {
+      showError('서버 연결에 실패했습니다. 잠시 후 다시 시도해주세요.');
+    } finally {
+      btn.disabled = false;
+      btn.textContent = '체질 감별하기';
+    }
+  }
+
+  function ganjiCell(label, g) {
+    return `<div class="ganji-cell">
+      <div class="gj-label">${label}</div>
+      <div class="gj-han">${g.stemHanja}${g.branchHanja}</div>
+      <div class="gj-kr">${g.stem}${g.branch}</div>
+    </div>`;
+  }
+
+  function fmtDate(d) { return d ? `${d.year}년 ${d.month}월 ${d.day}일` : ''; }
+
+  function renderResult(data) {
+    const p = data.primary;
+    const area = document.getElementById('resultArea');
+    let html = '';
+
+    // 변환 안내
+    let convNote = '';
+    if (data.input.convertedFrom) {
+      const c = data.input.convertedFrom, s = data.input.solar;
+      convNote = `<div class="conv-note">음력 ${c.year}.${c.month}.${c.day}${c.isLeap ? '(윤)' : ''} → 양력 ${s.year}.${s.month}.${s.day}</div>`;
+    }
+
+    // 메인 결과
+    html += `<div class="result-hero">
+      <div class="result-label">당신의 체질</div>
+      <div class="result-type">${p.constitution}</div>
+      <div class="result-note">${p.note}</div>
+      ${convNote}
+    </div>`;
+
+    // 간지표
+    html += `<div class="card">
+      <div class="card-title">🔖 사주 간지</div>
+      <div class="ganji-grid">
+        ${ganjiCell('년주', p.ganji.year)}
+        ${ganjiCell('월주', p.ganji.month)}
+        ${ganjiCell('일주', p.ganji.day)}
+      </div>
+      <div class="trace"><b>판정 근거</b> · ${p.branch}</div>`;
+    if (data.jieqi) {
+      html += `<div class="trace" style="margin-top:8px">절기: <b>${data.jieqi.name}</b> (${fmtDate(data.jieqi.date)}) ~ ${data.jieqi.next} 전</div>`;
+    }
+    html += `</div>`;
+
+    // 경계 사례
+    if (data.isBoundary && data.percentages) {
+      const pc = data.percentages;
+      const a = data.alternate;
+      html += `<div class="card boundary">
+        <div class="card-title">⚖️ 경계 사례 안내</div>
+        <p class="bd-explain" style="margin-bottom:14px">
+          출생일이 <b>양력 1월 1일과 입춘(立春) 사이</b>에 있어, 기준에 따라 체질이 갈립니다.
+          전통 만세력은 입춘을 한 해의 시작으로 보므로 <b>${p.constitution}</b>을(를) 우선합니다.
+        </p>
+        <div class="bd-bars">
+          <div class="bd-bar-label"><span>입춘 기준 · <b>${p.constitution}</b></span><span>${pc.ip}%</span></div>
+          <div class="bd-track"><div class="bd-fill ip" style="width:${pc.ip}%"></div></div>
+          <div class="bd-bar-label"><span>양력 기준 · <b>${a.constitution}</b></span><span>${pc.sol}%</span></div>
+          <div class="bd-track"><div class="bd-fill sol" style="width:${pc.sol}%"></div></div>
+        </div>
+        <p class="bd-explain">
+          ${data.ipchunDate ? `해당 연도 입춘: <b>${fmtDate(data.ipchunDate)}</b><br>` : ''}
+          ※ 두 결과 모두 의미가 있으며, 정확한 판별은 한의사 진료를 통해 확인하시기를 권합니다.
+        </p>
+      </div>`;
+    }
+
+    // 섭생법 영역 (버튼만 먼저)
+    html += `<div id="guidanceWrap"></div>`;
+    area.innerHTML = html;
+    renderGuidanceButton(p.constitution);
+    area.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  // ── 섭생법 ──
+  const GRADE_INFO = {
+    'OO': { label: '아주 좋음', bg: '#dcefe2', fg: '#1f6b3e' },
+    'O':  { label: '좋음',      bg: '#eaf5ee', fg: '#2f8a55' },
+    '△':  { label: '보통',      bg: '#fbf3df', fg: '#9a7d2e' },
+    'X':  { label: '주의',      bg: '#fbe9e7', fg: '#b5452f' },
+    'XX': { label: '피함',      bg: '#f6dcd8', fg: '#9c3b34' },
+  };
+  function chipHtml(v) {
+    return String(v).split('/').map(s => s.trim()).map(g => {
+      const info = GRADE_INFO[g] || { bg:'#eee', fg:'#555' };
+      return `<span class="chip" style="background:${info.bg};color:${info.fg}" title="${info.label||''}">${g}</span>`;
+    }).join('');
+  }
+
+  function renderGuidanceButton(constitution) {
+    const wrap = document.getElementById('guidanceWrap');
+    wrap.innerHTML = `<button class="acc-btn" id="accBtn" onclick="toggleGuidance('${constitution}')">
+      <span>🍵 ${constitution} 섭생법 보기 (음식·활동 권장)</span><span id="accArrow">▼</span>
+    </button><div id="guidanceBody"></div>`;
+  }
+
+  let guidanceOpen = false;
+  function toggleGuidance(constitution) {
+    guidanceOpen = !guidanceOpen;
+    document.getElementById('accArrow').textContent = guidanceOpen ? '▲' : '▼';
+    const body = document.getElementById('guidanceBody');
+    if (!guidanceOpen) { body.innerHTML = ''; return; }
+
+    const data = window.GUIDANCE_DATA;
+    let html = '<div class="card" style="margin-top:10px">';
+    Object.keys(data).forEach((cat, ci) => {
+      html += `<div class="cat">
+        <button class="cat-head" onclick="toggleCat(${ci})">
+          <span>${cat}</span><span id="catArr${ci}">+</span>
+        </button>
+        <div class="cat-body hidden" id="catBody${ci}">`;
+      data[cat].forEach(item => {
+        html += `<div class="food-row">
+          <span class="food-name">${item.name}</span>
+          <span class="chips">${chipHtml(item[constitution])}</span>
+        </div>`;
+      });
+      html += `</div></div>`;
+    });
+    html += `<div class="source-note">
+      출처: 권도원 박사 8체질 섭생표 (8체질 → 4체질 압축). 슬래시(/) 표기는 양체질/음체질 값이 다른 경우입니다.<br>
+      ※ 유주열 『새로 쓴 사상의학』 보강 예정
+    </div></div>`;
+    body.innerHTML = html;
+  }
+
+  function toggleCat(ci) {
+    const b = document.getElementById('catBody' + ci);
+    const arr = document.getElementById('catArr' + ci);
+    const willOpen = b.classList.contains('hidden');
+    b.classList.toggle('hidden');
+    arr.textContent = willOpen ? '−' : '+';
+  }
+</script>
+
+  <div class="wrap">
+    <p class="disclaimer">
+      본 서비스는 干支體質論에 기반한 체질 참고 정보를 제공합니다.<br>
+      의학적 진단·치료를 대체하지 않으며, 정확한 판별은 한의사 진료가 필요합니다.<br>
+      © 신라한의원 · 干支體質論
+    </p>
+  </div>
+</body>
+</html>
