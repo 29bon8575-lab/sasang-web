@@ -241,7 +241,20 @@ const _determineConstitution = g => {
   const maxEarth = maxOf('토');
   const maxWood  = maxOf('목');
 
-  const trace = { maxH, maxF, maxMetal, maxWater, maxEarth, maxWood };
+  // 자리강도 순위 시각화용 (판정 로직과 무관 · 표시 전용)
+  const _elOf = p => p.kind === 'stem' ? stemElement[p.value] : branchElement[p.value];
+  const ranked = positions
+    .slice()
+    .sort((a, b) => b.strength - a.strength)
+    .map(p => ({
+      label: p.label,
+      value: p.value,
+      kind: p.kind,
+      strength: p.strength,
+      element: ['미','술'].includes(p.value) && p.kind === 'branch' ? '相' : _elOf(p),
+    }));
+
+  const trace = { maxH, maxF, maxMetal, maxWater, maxEarth, maxWood, ranked };
 
   const decideHarmony = () => {
     if (maxMetal === 0 && maxWater === 0) {
@@ -411,6 +424,7 @@ export default function handler(req, res) {
       },
       branch: side.constitution.branch,
       note: side.constitution.note,
+      ranked: side.constitution.trace.ranked,
     });
 
     return res.status(200).json({
