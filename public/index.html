@@ -137,6 +137,46 @@ header{text-align:center;padding:26px 0 22px;}
   color:var(--gold-soft);opacity:0.78;margin-top:4px;letter-spacing:0.06em;
 }
 .con-desc{font-size:14.5px;color:var(--ink-soft);margin-top:12px;}
+.result-head{position:relative;}
+.print-btn{position:absolute;top:0;right:0;background:transparent;border:1px solid var(--line);color:var(--ink-soft);font-size:12.5px;padding:7px 12px;border-radius:9px;cursor:pointer;font-family:inherit;transition:.2s;}
+.print-btn:hover{border-color:var(--gold-bright);color:var(--gold-bright);}
+@media print{
+  @page{margin:13mm;}
+  :root{
+    --ink:#111!important; --ink-soft:#222!important; --ink-dim:#444!important;
+    --gold:#000!important; --gold-soft:#000!important; --gold-bright:#000!important; --gold-deep:#000!important;
+    --line:#bbb!important; --line-soft:#ccc!important;
+    --el-mok:#0a7d4a!important; --el-hwa:#c0392b!important; --el-to:#9a7a10!important;
+    --el-geum:#333!important; --el-su:#1c5fb0!important; --el-sang:#6a3db0!important;
+    --g-oo:#0a7d4a!important; --g-o:#2e7d32!important; --g-mid:#8a6d00!important; --g-x:#b03a2e!important; --g-xx:#a01810!important;
+  }
+  body{background:#fff!important;color:#111!important;}
+  .topbar,header,.card,.tabs,.loading,.no-print,.boundary-note .bn-head,.theory-box{display:none!important;}
+  .tab-pane{display:block!important;animation:none!important;page-break-inside:avoid;margin-top:18px;}
+  .wrap{max-width:100%!important;padding:0!important;}
+  *{box-shadow:none!important;text-shadow:none!important;}
+  /* 본문 전반 검정 강제 */
+  .con-name{color:#111!important;font-size:30px!important;}
+  .con-han,.con-desc,.health-item,.meta-line,.key-judge,.disclaimer,.food-title,.rank-pos,.rank-str,.gj-pos,.gj-kr,.basis-note,.food-src{color:#222!important;}
+  .food-list{color:#111!important;}
+  .food-list .sep{color:#888!important;}
+  .gj-han{color:#111!important;}
+  .meta-line{background:#f2f2f2!important;}
+  .meta-line b{color:#111!important;}
+  /* 박스 테두리 옅은 회색, 배경 흰색 */
+  .gj-cell,.rank-cell,.food-group,.health-item,.boundary-note,.basis-card{border-color:#bbb!important;background:#fff!important;}
+  /* 등급 칩: 테두리+검은 글씨 */
+  .grade-badge{background:#f0f0f0!important;border:1px solid #999!important;}
+  .gb-XX{color:#a01810!important;}
+  .grade-group{background:#fff!important;border-color:#bbb!important;}
+  .source-note{color:#444!important;border-top-color:#ccc!important;}
+  a{color:#111!important;text-decoration:none;}
+  /* 탭 제목 자동 표기 */
+  .tab-pane::before{display:block;font-weight:700;font-size:15px;color:#111;margin:14px 0 8px;border-bottom:1px solid #ccc;padding-bottom:5px;}
+  #pane-health::before{content:"건강 특성";}
+  #pane-food::before{content:"음식 정보";}
+  #pane-basis::before{content:"판별 기준";}
+}
 .con-basis{font-size:12.5px;color:var(--ink-dim);margin-top:6px;}
 .con-basis b{color:var(--gold-soft);font-weight:600;}
 .conv-note{font-size:12px;color:var(--ink-dim);margin-top:10px;background:rgba(0,0,0,0.2);border-radius:8px;padding:7px 10px;display:inline-block;}
@@ -405,6 +445,7 @@ function renderResult(data){
   // 결과 헤더
   let html=`<div class="card t-${con}">
     <div class="result-head">
+      <button class="print-btn no-print" onclick="window.print()" title="인쇄">🖨 인쇄</button>
       <div class="con-name">${LANG==='ko'?con:meta.en}</div>
       <div class="con-han">${meta.han}</div>
       <div class="con-desc">${meta.desc}</div>

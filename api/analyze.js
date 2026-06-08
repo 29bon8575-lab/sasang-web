@@ -225,7 +225,11 @@ const _determineConstitution = g => {
   const harmonyPos = positions.filter(p => p.kind === 'branch' && ['미','술'].includes(p.value));
   const maxH = harmonyPos.length === 0 ? 0 : Math.max(...harmonyPos.map(p => p.strength));
 
-  const firePos = positions.filter(p => p.kind === 'stem' && ['병','정'].includes(p.value));
+  // 火 기운: 천간 병·정 + 지지 사·오 (干支體質論: 지지 巳·午도 火에 포함)
+  const firePos = positions.filter(p =>
+    (p.kind === 'stem'   && ['병','정'].includes(p.value)) ||
+    (p.kind === 'branch' && ['사','오'].includes(p.value))
+  );
   const maxF = firePos.length === 0 ? 0 : Math.max(...firePos.map(p => p.strength));
 
   const maxOf = element => {
